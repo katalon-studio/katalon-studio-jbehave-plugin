@@ -21,46 +21,46 @@ import com.kms.katalon.core.util.KeywordUtil
 
 public class JBehaveKeywords {
 
-	@Keyword
-	public void runStoryFiles(List<String> relativeFilePaths) {
-		if (relativeFilePaths == null) {
-			throw new IllegalArgumentException("relativeFilePaths param must not be null")
-		}
+    @Keyword
+    public void runStoryFiles(List<String> relativeFilePaths) {
+        if (relativeFilePaths == null) {
+            throw new IllegalArgumentException("relativeFilePaths param must not be null")
+        }
 
-		String projectDir = RunConfiguration.getProjectDir()
+        String projectDir = RunConfiguration.getProjectDir()
 
-		long timeStamp = System.currentTimeMillis()
+        long timeStamp = System.currentTimeMillis()
 
-		String reportDir = RunConfiguration.getReportFolder() + File.separator + "jbehave_report" + File.separator + timeStamp
+        String reportDir = RunConfiguration.getReportFolder() + File.separator + "jbehave_report" + File.separator + timeStamp
 
-		KeywordUtil.logInfo(
-				MessageFormat.format("Starting run keyword runStoryFiles: [{0}]",
-				StringUtils.join(relativeFilePaths, ","), reportDir))
+        KeywordUtil.logInfo(
+                MessageFormat.format("Starting run keyword runStoryFiles: [{0}]",
+                StringUtils.join(relativeFilePaths, ","), reportDir))
 
-		Embedder embedder = new Embedder() {
-					@Override
-					public Configuration configuration() {
-						Class<? extends Embeddable> embeddableClass = this.getClass()
-						return new MostUsefulConfiguration()
-								.useStoryLoader(new LoadFromURL())
-								.useStoryReporterBuilder(new StoryReporterBuilder()
-								.withCodeLocation(CodeLocations.codeLocationFromPath(reportDir))
-								.withRelativeDirectory(timeStamp.toString())
-								.withDefaultFormats()
-								.withFormats(Format.HTML, Format.JSON, Format.XML, Format.CONSOLE)
-								)
-					}
+        Embedder embedder = new Embedder() {
+            @Override
+            public Configuration configuration() {
+                Class<? extends Embeddable> embeddableClass = this.getClass()
+                return new MostUsefulConfiguration()
+                        .useStoryLoader(new LoadFromURL())
+                        .useStoryReporterBuilder(new StoryReporterBuilder()
+                            .withCodeLocation(CodeLocations.codeLocationFromPath(reportDir))
+                            .withRelativeDirectory(timeStamp.toString())
+                            .withDefaultFormats()
+                            .withFormats(Format.HTML, Format.JSON, Format.XML, Format.CONSOLE)
+                        )
+            }
 
-					@Override
-					public InjectableStepsFactory stepsFactory() {
-						return new ScanningStepsFactory(configuration(), ".*")
-					}
-				}
+            @Override
+            public InjectableStepsFactory stepsFactory() {
+                return new ScanningStepsFactory(configuration(), ".*")
+            }
+        }
 
-		List<String> storyFileUrls = relativeFilePaths.stream()
-				.map{ path -> new File(projectDir, path).toURI().toURL().toExternalForm() }
-				.collect(Collectors.toList())
+        List<String> storyFileUrls = relativeFilePaths.stream()
+                .map{ path -> new File(projectDir, path).toURI().toURL().toExternalForm() }
+                .collect(Collectors.toList())
 
-		embedder.runStoriesAsPaths(storyFileUrls)
-	}
+        embedder.runStoriesAsPaths(storyFileUrls)
+    }
 }
