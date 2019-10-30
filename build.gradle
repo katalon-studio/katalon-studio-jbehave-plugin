@@ -1,0 +1,41 @@
+plugins {
+  id 'java'
+  id 'groovy'
+  id 'com.github.johnrengelman.shadow' version '4.0.4'
+  id "com.katalon.gradle-plugin" version "0.0.7"
+}
+
+repositories {
+  mavenCentral()
+}
+
+sourceSets {
+  main {
+    groovy {
+      srcDirs = ['Keywords', 'Include/scripts/groovy']
+      srcDir 'Libs'
+    }
+  }
+}
+
+shadowJar {
+  exclude 'Temp*.class'
+}
+
+configurations {
+	compile {
+		exclude group: 'junit'
+	  	exclude group: 'org.apache.commons'
+	  	exclude group: 'org.hamcrest'
+	  	exclude group: 'com.google.guava'
+	  	exclude group: 'com.google.code.gson'
+	  	exclude group: 'org.slf4j'
+  		exclude group: 'dom4j'
+	}
+}
+
+dependencies {
+  compile 'org.jbehave:jbehave-core:4.6' 
+  
+  compile 'org.reflections:reflections:0.9.11'
+}
